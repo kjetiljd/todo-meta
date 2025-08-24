@@ -13,3 +13,9 @@ meta-update: ## Clone any repos that exist in your .meta file but aren't cloned 
 
 pull: ## Run git pull --all --rebase --autostash on all repos
 	@meta exec "git pull --all --rebase --autostash" --parallel
+
+build: ## Build all sub-projects with make build
+	@meta exec "make build" --exclude "$(meta_project)"
+
+test: ## Test all sub-projects with make test
+	@meta exec "make test" --exclude "$(meta_project)"
