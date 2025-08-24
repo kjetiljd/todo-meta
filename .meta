@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "todo-frontend": "https://github.com/kjetiljd/todo-frontend.git",
+    "todo-backend": "https://github.com/kjetiljd/todo-backend.git",
+    "todo-sorter": "https://github.com/kjetiljd/todo-sorter.git"
+  }
+}
