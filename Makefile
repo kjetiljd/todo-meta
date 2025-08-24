@@ -22,3 +22,32 @@ test: ## Test all sub-projects with make test
 
 list-local-commits: ## shows local, unpushed, commits
 	@meta exec "git log --oneline origin/HEAD..HEAD | cat"
+
+up: ## Start all services in background
+	docker-compose up -dma
+	$(MAKE) urls
+
+up-build: ## Build and start all services in background
+	docker-compose up --build -d
+	$(MAKE) urls
+
+down: ## Stop all services
+	docker-compose down
+
+restart: down up ## Restart all services
+
+rebuild: down up-build ## Restart all services with rebuild
+
+logs: ## View service logs
+	docker-compose logs -f
+
+status: ## Show service status
+	docker-compose ps
+
+urls: ## Show service URLs and ports
+	@echo "Service URLs:"
+	@docker-compose ps --format "table {{.Name}}\t{{.Ports}}" | grep -E "(meta-todo-|Name)" | \
+	sed 's/meta-todo-frontend.*0.0.0.0:\([0-9]*\)->80.*/  Frontend: http:\/\/localhost:\1/' | \
+	sed 's/meta-todo-backend.*0.0.0.0:\([0-9]*\)->8080.*/  Backend:  http:\/\/localhost:\1/' | \
+	sed 's/meta-todo-sorter.*0.0.0.0:\([0-9]*\)->3001.*/  Sorter:   http:\/\/localhost:\1/' | \
+	grep -v "Name\|Ports"

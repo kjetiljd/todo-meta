@@ -1,0 +1,63 @@
+services:
+  todo-backend:
+    build: ./todo-backend
+    container_name: meta-todo-backend
+    ports:
+      - "8082:8080"
+    environment:
+      - SORTER_SERVICE_URL=http://meta-todo-sorter:3001
+    volumes:
+      - todo-data:/app/data
+    networks:
+      - todo-network
+    depends_on:
+      - todo-sorter
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  todo-frontend:
+    build: ./todo-frontend
+    container_name: meta-todo-frontend
+    ports:
+      - "8081:80"
+    environment:
+      - API_URL=http://meta-todo-backend:8080
+    networks:
+      - todo-network
+    depends_on:
+      - todo-backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  todo-sorter:
+    build: ./todo-sorter
+    container_name: meta-todo-sorter
+    ports:
+      - "8083:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    networks:
+      - todo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  todo-data:
+    driver: local
+
+networks:
+  todo-network:
+    driver: bridge
