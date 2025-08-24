@@ -1,0 +1,5 @@
+rootProject.name = "todo-meta"
+
+includeBuild "todo-frontend"
+includeBuild "todo-backend"
+includeBuild "todo-sorter"
