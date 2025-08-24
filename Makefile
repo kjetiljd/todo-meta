@@ -19,3 +19,6 @@ build: ## Build all sub-projects with make build
 
 test: ## Test all sub-projects with make test
 	@meta exec "make test" --exclude "$(meta_project)"
+
+list-local-commits: ## shows local, unpushed, commits
+	@meta exec "git log --oneline origin/HEAD..HEAD | cat"
